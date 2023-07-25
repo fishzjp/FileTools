@@ -61,12 +61,12 @@ FileGeneratorApp {
     font-size: 16px;
 }
 QProgressBar {
-    border: 2px solid #FFFFFF;
+    border: 0px;
     border-radius: 10px;
     background-color: #f0f0f0;
     color:#FFFFFF;
 }
 QProgressBar::chunk {
     background-color: #0078d7; /* 修改为和按钮一样的蓝色 */
-    width: 20px;
+    border-radius: 10px;
 }
