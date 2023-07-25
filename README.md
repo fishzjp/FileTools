@@ -22,7 +22,6 @@ v 1.0.0.1<br>
 # relese
   ## v1.1.0.1 
     1. 增加动态磁盘剩余空间显示
-    ![image](https://github.com/fishzjp/FileTools/assets/105406371/af3331ab-0618-4c0d-9115-8caf163a0652)
     2. 优化部分已知问题
 
 
