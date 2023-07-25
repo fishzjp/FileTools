@@ -9,8 +9,12 @@
 2. 文件写入速度快：任意大小文件秒写入
 
 # 工具界面
-v 1.0.0.1 
+
+v 1.1.0.1<br>
+![image](https://github.com/fishzjp/FileTools/assets/105406371/5529c0de-7d44-4147-9638-1225e715db38)
+v 1.0.0.1<br>
 ![image](https://github.com/fishzjp/FileTools/assets/105406371/f8c8b563-ba67-46f5-8083-b7e876c405c4)
+
 
 # 工具字体
 字体采用得意黑 https://github.com/atelier-anchor/smiley-sans
