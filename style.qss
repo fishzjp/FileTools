@@ -1,0 +1,61 @@
+/* style.qss */
+
+/* 整体风格设置 */
+QWidget {
+    background-color: #F5F5F5;
+}
+
+/* 标签样式 */
+QLabel {
+    font-family: "SmileySans-Oblique", Arial, sans-serif;
+    font-size: 16px;
+}
+
+/* 文本输入框样式 */
+QLineEdit {
+    border: 1px solid #DADADA;
+    border-radius: 5px;
+    padding: 5px;
+    font-family: "SmileySans-Oblique", Arial, sans-serif;
+    font-size: 14px;
+}
+
+/* 进度条样式 */
+QProgressBar {
+    border: 1px solid #DADADA;
+    border-radius: 5px;
+    padding: 1px;
+    background-color: #FFFFFF;
+    text-align: center;
+}
+
+/* 设置进度条文本颜色为黑色 */
+QProgressBar::chunk {
+    background-color: #007BFF;
+    color: #000000; /* Set the text color to black */
+}
+
+/* 按钮样式 */
+QPushButton {
+    border: none;
+    padding: 5px 10px;
+    color: #FFFFFF;
+    background-color: #007BFF;
+    border-radius: 5px;
+    font-family: "SmileySans-Oblique", Arial, sans-serif;
+    font-size: 16px;
+}
+
+QPushButton:hover {
+    background-color: #0056b3;
+}
+
+QPushButton:pressed {
+    background-color: #004080;
+}
+
+/* 文件生成器App界面样式 */
+FileGeneratorApp {
+    font-family: "SmileySans-Oblique", Arial, sans-serif;
+    font-size: 16px;
+}
