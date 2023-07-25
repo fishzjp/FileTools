@@ -5,9 +5,14 @@ QWidget {
     background-color: #F5F5F5;
 }
 
+* {
+    font-family: 'Smiley Sans', Arial, sans-serif;
+    /* 其他样式设置 */
+}
+
 /* 标签样式 */
 QLabel {
-    font-family: "SmileySans-Oblique", Arial, sans-serif;
+    font-family: 'Smiley Sans', Arial, sans-serif;
     font-size: 16px;
 }
 
@@ -16,7 +21,7 @@ QLineEdit {
     border: 1px solid #DADADA;
     border-radius: 5px;
     padding: 5px;
-    font-family: "SmileySans-Oblique", Arial, sans-serif;
+    font-family: 'Smiley Sans', Arial, sans-serif;
     font-size: 14px;
 }
 
@@ -42,7 +47,7 @@ QPushButton {
     color: #FFFFFF;
     background-color: #007BFF;
     border-radius: 5px;
-    font-family: "SmileySans-Oblique", Arial, sans-serif;
+    font-family: 'Smiley Sans', Arial, sans-serif;
     font-size: 16px;
 }
 
@@ -56,6 +61,16 @@ QPushButton:pressed {
 
 /* 文件生成器App界面样式 */
 FileGeneratorApp {
-    font-family: "SmileySans-Oblique", Arial, sans-serif;
+    font-family: 'Smiley Sans', Arial, sans-serif;
     font-size: 16px;
+}
+QProgressBar {
+    border: 2px solid #FFFFFF;
+    border-radius: 10px;
+    background-color: #f0f0f0;
+    color:#FFFFFF;
+}
+QProgressBar::chunk {
+    background-color: #0078d7; /* 修改为和按钮一样的蓝色 */
+    width: 20px;
 }
