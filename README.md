@@ -28,6 +28,9 @@ v 1.0.0.1<br>
 字体采用得意黑 https://github.com/atelier-anchor/smiley-sans
 
 # Relese
+  ### v1.1.0.2
+    1. 增加磁盘剩余空间单位的选择
+    2. 优化部分已知问题<br>
   ### v1.1.0.1 
     1. 增加动态磁盘剩余空间显示
     2. 优化部分已知问题
