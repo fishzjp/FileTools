@@ -21,34 +21,10 @@ pyinstaller --onefile --add-data "icon.png;." --add-data "SmileySans-Oblique.ttf
 
 # 工具界面
 
-v 1.1.0.2<br>
 ![image](https://github.com/fishzjp/FileTools/assets/105406371/5cb835f9-def3-4a29-bcb4-b5db637a9146)
-
-<br>
-v 1.1.0.1<br>
-
-![image](https://github.com/fishzjp/FileTools/assets/105406371/6c740942-dbde-4d2f-ac06-39b527de94d4)
-
-<br>
-v 1.0.0.1<br>
-
-![image](https://github.com/fishzjp/FileTools/assets/105406371/f8c8b563-ba67-46f5-8083-b7e876c405c4)
-
 
 # 工具字体
 字体采用得意黑 https://github.com/atelier-anchor/smiley-sans
-
-# Relese
-  ### v1.1.0.3
-    1. 优化文件写入速度 写入速度提升40%
-    2. 优化部分已知问题
-  ### v1.1.0.2
-    1. 增加磁盘剩余空间单位的选择
-    2. 优化部分已知问题
-  ### v1.1.0.1 
-    1. 增加动态磁盘剩余空间显示
-    2. 优化部分已知问题
-
 
 # 公众号
 ![扫码_搜索联合传播样式-白色版](https://github.com/fishzjp/FileTools/assets/105406371/49abfbc1-d46e-410c-98f1-959f2dbfe87a)
