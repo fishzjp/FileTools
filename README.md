@@ -8,6 +8,17 @@
 1. 用户友好的界面：该工具使用了PyQt5库来创建一个图形化界面，使用户能够直观、方便地操作。界面提供了文件夹路径、文件名称和文件大小等输入框，以及浏览和生成按钮，用户可以轻松选择路径和设置文件参数。
 2. 文件写入速度快：任意大小文件秒写入
 
+# 程序打包
+
+### 程序使用pyinstaller打包，打包时有使用upx压缩，打包命令如下
+'''
+# 使用upx压缩打包命令  注意：--upx-dir= 需要替换为你本地upx的安装路径
+pyinstaller --onefile --add-data "icon.png;." --add-data "SmileySans-Oblique.ttf;." --add-data "style.qss;." --noconsole --upx-dir=D:\code\file_tools\tools\upx-4.0.2-win64\upx-4.0.2-win64 file_tools.py
+
+# 不使用upx压缩打包命令
+pyinstaller --onefile --add-data "icon.png;." --add-data "SmileySans-Oblique.ttf;." --add-data "style.qss;." --noconsole file_tools.py
+'''
+
 # 工具界面
 
 v 1.1.0.2<br>
