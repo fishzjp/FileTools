@@ -11,13 +11,13 @@
 # 程序打包
 
 ### 程序使用pyinstaller打包，打包时有使用upx压缩，打包命令如下
-'''
+```
 # 使用upx压缩打包命令  注意：--upx-dir= 需要替换为你本地upx的安装路径
 pyinstaller --onefile --add-data "icon.png;." --add-data "SmileySans-Oblique.ttf;." --add-data "style.qss;." --noconsole --upx-dir=D:\code\file_tools\tools\upx-4.0.2-win64\upx-4.0.2-win64 file_tools.py
 
 # 不使用upx压缩打包命令
 pyinstaller --onefile --add-data "icon.png;." --add-data "SmileySans-Oblique.ttf;." --add-data "style.qss;." --noconsole file_tools.py
-'''
+```
 
 # 工具界面
 
