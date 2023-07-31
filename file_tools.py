@@ -2,15 +2,17 @@ import sys
 import os
 import psutil
 from pathlib import Path
-from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QVBoxLayout, QHBoxLayout, QLineEdit, QPushButton, QMessageBox, QFileDialog, QProgressBar
+from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QVBoxLayout, QHBoxLayout, QLineEdit, QPushButton, QMessageBox, QFileDialog, QProgressBar, QRadioButton, QGroupBox
 from PyQt5.QtGui import QIcon, QFont, QFontDatabase, QPainter, QColor, QPalette
 from PyQt5.QtCore import Qt, QThread, pyqtSignal
+from PyQt5.QtWidgets import QToolTip
 
 
 def resource_path(relative_path):
     if hasattr(sys, '_MEIPASS'):
         return os.path.join(sys._MEIPASS, relative_path)
     return os.path.join(os.path.dirname(os.path.abspath(__file__)), relative_path)
+
 
 class CustomApplication(QApplication):
     def __init__(self, *args, **kwargs):
@@ -24,6 +26,7 @@ class CustomApplication(QApplication):
             font_family = QFontDatabase.applicationFontFamilies(font_id)[0]
             font = QFont(font_family)
             self.setFont(font)
+
 
 class DiskUsageProgressBar(QProgressBar):
     def __init__(self, parent=None):
@@ -58,13 +61,15 @@ class DiskUsageProgressBar(QProgressBar):
     def setValue(self, progress):
         super().setValue(progress)
 
+
 class DiskUsageWidget(QWidget):
-    def __init__(self, device, total, used, percent):
+    def __init__(self, device, total, used, percent, unit):
         super().__init__()
         self.device = device
         self.total = total
         self.used = used
         self.percent = percent
+        self.current_unit = unit
         self.init_ui()
 
     def init_ui(self):
@@ -75,26 +80,48 @@ class DiskUsageWidget(QWidget):
         self.disk_bar = DiskUsageProgressBar()
         self.disk_bar.setValue(self.percent)
         layout.addWidget(self.disk_bar)
+
         self.current_space_label = QLabel()
         self.current_space_label.setAlignment(Qt.AlignCenter)
-        self.update_current_space()
         layout.addWidget(self.current_space_label)
+
         self.setLayout(layout)
 
+    def set_unit(self, unit):
+        self.current_unit = unit
+
     def update_current_space(self):
-        current_space = self.used / (1024 * 1024 * 1024)
-        available_space = (self.total - self.used) / (1024 * 1024 * 1024)
-        total_space = self.total / (1024 * 1024 * 1024)
-        text = f" Used {current_space:.2f} GB / Free {available_space:.2f} GB / Total {total_space:.2f} GB"
+        unit_mapping = {"KB": 1024, "MB": 1024 * 1024, "GB": 1024 * 1024 * 1024, "TB": 1024 * 1024 * 1024 * 1024}
+        selected_unit = self.current_unit
+
+        current_space = self.used / unit_mapping[selected_unit]
+        available_space = (self.total - self.used) / unit_mapping[selected_unit]
+        total_space = self.total / unit_mapping[selected_unit]
+
+        text = f"{current_space:.2f} {selected_unit[0]}B / {available_space:.2f} {selected_unit[0]}B / {total_space:.2f} {selected_unit[0]}B"
         self.current_space_label.setStyleSheet("font-size: 14px; color: #999999;")
         self.current_space_label.setAlignment(Qt.AlignCenter)
         self.current_space_label.setText(text)
+        self.current_space_label.setToolTip(f"已用空间：{current_space:.2f} {selected_unit}\n"
+                                             f"剩余空间：{available_space:.2f} {selected_unit}\n"
+                                             f"总空间：{total_space:.2f} {selected_unit}")
 
-    def update_usage(self, used, percent):
-        self.used = used
-        self.percent = percent
-        self.disk_bar.setValue(self.percent)
+        font = QFont()
+        font.setPointSize(12)
+        self.current_space_label.setFont(font)
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
         self.update_current_space()
+
+    def enterEvent(self, event):
+        # Override the enterEvent to force showing the tooltip when the mouse enters
+        QToolTip.showText(event.globalPos(), self.current_space_label.toolTip(), self.current_space_label)
+
+    def leaveEvent(self, event):
+        # Override the leaveEvent to reset the tooltip when the mouse leaves
+        QToolTip.hideText()
+
 
 def get_disk_usages():
     disk_usages = []
@@ -106,6 +133,7 @@ def get_disk_usages():
         disk_usages.append((partition.device, usage.total, usage.used, usage.percent))
     return disk_usages
 
+
 class DiskUsageThread(QThread):
     disk_usages_signal = pyqtSignal(list)
 
@@ -115,9 +143,11 @@ class DiskUsageThread(QThread):
             self.disk_usages_signal.emit(disk_usages)
             self.msleep(1000)
 
+
 def generate_chunk(file_path, chunk_size):
     with open(file_path, 'wb') as file:
         file.write(b'\0' * chunk_size)
+
 
 def generate_file(file_path, file_size, progress_callback):
     file_size_bytes = file_size * 1024 * 1024
@@ -132,14 +162,16 @@ def generate_file(file_path, file_size, progress_callback):
 
     progress_callback.emit(100)
 
+
 class FileGeneratorThread(QThread):
     generation_completed = pyqtSignal(str)
     progress_callback = pyqtSignal(int)
 
-    def __init__(self, file_path, file_size):
+    def __init__(self, file_path, file_size, unit):
         super().__init__()
         self.file_path = file_path
         self.file_size = file_size
+        self.unit = unit
 
     def run(self):
         try:
@@ -162,13 +194,14 @@ class FileGeneratorThread(QThread):
         with open(file_path, 'ab') as file:
             file.write(b'\0' * chunk_size)
 
+
 class FileGeneratorApp(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle('任意大小文件生成器')
         self.setWindowIcon(QIcon(resource_path('icon.png')))
-        self.setMinimumSize(390, 0)
-        self.setMaximumSize(390, 0)
+        self.setMinimumSize(390, 800)
+        self.setMaximumSize(390, 800)
 
         self.disk_usage_widgets = []
         self.disk_usage_thread = DiskUsageThread(self)
@@ -176,13 +209,14 @@ class FileGeneratorApp(QWidget):
         self.disk_usage_thread.start()
 
         self.progress_bar = QProgressBar()
+        self.unit_group = QGroupBox('磁盘空间单位')
+        self.unit_radio_buttons = []
+        self.current_unit = "GB"  # 初始化默认单位为GB
         self.init_ui()
 
         self.load_style()
 
-        # 添加以下代码来加载自定义字体
         font_path = resource_path('SmileySans-Oblique.ttf')
-
         font_id = QFontDatabase.addApplicationFont(font_path)
         if font_id != -1:
             font_family = QFontDatabase.applicationFontFamilies(font_id)[0]
@@ -202,7 +236,6 @@ class FileGeneratorApp(QWidget):
 
         self.setStyleSheet(style)
 
-        # 显式为所有部件设置字体
         font = QFont(font_family)
         for widget in QApplication.allWidgets():
             widget.setFont(font)
@@ -233,7 +266,7 @@ class FileGeneratorApp(QWidget):
         disk_usages = get_disk_usages()
         for disk_usage in disk_usages:
             device, total, used, percent = disk_usage
-            disk_widget = DiskUsageWidget(device, total, used, percent)
+            disk_widget = DiskUsageWidget(device, total, used, percent, self.current_unit)
             self.disk_usage_widgets.append(disk_widget)
             disk_usage_layout.addWidget(disk_widget)
 
@@ -247,6 +280,22 @@ class FileGeneratorApp(QWidget):
         layout.addWidget(self.disk_dashboard_label)
         layout.addLayout(disk_usage_layout)
 
+        unit_layout = QHBoxLayout()
+        self.unit_group = QGroupBox('磁盘空间单位')
+        self.unit_radio_buttons.append(self.create_radio_button("KB"))
+        self.unit_radio_buttons.append(self.create_radio_button("MB"))
+        self.unit_radio_buttons.append(self.create_radio_button("GB"))
+        self.unit_radio_buttons.append(self.create_radio_button("TB"))
+        unit_layout.addWidget(self.unit_radio_buttons[0])
+        unit_layout.addWidget(self.unit_radio_buttons[1])
+        unit_layout.addWidget(self.unit_radio_buttons[2])
+        unit_layout.addWidget(self.unit_radio_buttons[3])
+        self.unit_group.setLayout(unit_layout)
+        layout.addWidget(self.unit_group)
+
+        for radio_button in self.unit_radio_buttons:
+            radio_button.toggled.connect(self.on_unit_changed)
+
         generate_layout = QVBoxLayout()
         self.progress_label = QLabel('文件生成进度：')
         generate_layout.addWidget(self.progress_label)
@@ -258,6 +307,24 @@ class FileGeneratorApp(QWidget):
 
         layout.addLayout(generate_layout)
         self.setLayout(layout)
+
+    def create_radio_button(self, text):
+        radio_button = QRadioButton(text)
+        radio_button.setChecked(text == "GB")
+        return radio_button
+
+    def on_unit_changed(self):
+        selected_unit = ""
+        for radio_button in self.unit_radio_buttons:
+            if radio_button.isChecked():
+                selected_unit = radio_button.text()
+                break
+
+        self.current_unit = selected_unit
+
+        for widget in self.disk_usage_widgets:
+            widget.set_unit(selected_unit)
+            widget.update_current_space()
 
     def browse_button_clicked(self):
         dir_path = QFileDialog.getExistingDirectory(self, '选择文件夹路径')
@@ -274,9 +341,15 @@ class FileGeneratorApp(QWidget):
 
         try:
             file_size = int(file_size)
+            selected_unit = ""
+            for radio_button in self.unit_radio_buttons:
+                if radio_button.isChecked():
+                    selected_unit = radio_button.text()
+                    break
+
             file_path = f"{dir_path}/{file_name}"
 
-            self.file_generator_thread = FileGeneratorThread(file_path, file_size)
+            self.file_generator_thread = FileGeneratorThread(file_path, file_size, selected_unit)
             self.file_generator_thread.generation_completed.connect(self.file_generation_completed)
             self.file_generator_thread.progress_callback.connect(self.update_progress_bar)
 
@@ -297,12 +370,13 @@ class FileGeneratorApp(QWidget):
         disk_usage_layout = QVBoxLayout()
         for disk_usage in disk_usages:
             device, total, used, percent = disk_usage
-            disk_widget = DiskUsageWidget(device, total, used, percent)
+            disk_widget = DiskUsageWidget(device, total, used, percent, self.current_unit)
             self.disk_usage_widgets.append(disk_widget)
             disk_usage_layout.addWidget(disk_widget)
         layout = self.layout()
         layout.insertWidget(layout.count() - 2, self.disk_dashboard_label)
         layout.insertLayout(layout.count() - 1, disk_usage_layout)
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
