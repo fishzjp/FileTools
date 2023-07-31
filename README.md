@@ -23,6 +23,9 @@ pyinstaller --onefile --add-data "icon.png;." --add-data "SmileySans-Oblique.ttf
 
 ![image](https://github.com/fishzjp/FileTools/assets/105406371/5cb835f9-def3-4a29-bcb4-b5db637a9146)
 
+# 工具下载
+https://github.com/fishzjp/FileTools/releases
+
 # 工具字体
 字体采用得意黑 https://github.com/atelier-anchor/smiley-sans
 
