@@ -10,6 +10,10 @@
 
 # 工具界面
 
+v 1.1.0.2<br>
+![image](https://github.com/fishzjp/FileTools/assets/105406371/5cb835f9-def3-4a29-bcb4-b5db637a9146)
+
+<br>
 v 1.1.0.1<br>
 
 ![image](https://github.com/fishzjp/FileTools/assets/105406371/6c740942-dbde-4d2f-ac06-39b527de94d4)
