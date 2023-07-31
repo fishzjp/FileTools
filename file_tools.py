@@ -6,6 +6,7 @@ from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QVBoxLayout, QHBoxLay
 from PyQt5.QtGui import QIcon, QFont, QFontDatabase, QPainter, QColor, QPalette
 from PyQt5.QtCore import Qt, QThread, pyqtSignal
 from PyQt5.QtWidgets import QToolTip
+import concurrent.futures
 
 
 def resource_path(relative_path):
@@ -173,27 +174,38 @@ class FileGeneratorThread(QThread):
         self.file_size = file_size
         self.unit = unit
 
+    def generate_chunk(self, file_path, chunk_size):
+        with open(file_path, 'ab') as file:
+            file.write(b'\0' * chunk_size)
+
+    def generate_file(self, total_chunks, chunk_size):
+        max_workers = max(os.cpu_count() - 1, 1)  # 根据系统CPU核数动态设置max_workers
+        with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
+            futures = [executor.submit(self.generate_chunk, self.file_path, chunk_size) for _ in range(total_chunks)]
+
+            for i, future in enumerate(concurrent.futures.as_completed(futures), 1):
+                progress = (i / total_chunks) * 100
+                self.progress_callback.emit(progress)
+                future.result()
+
     def run(self):
         try:
             file_size_bytes = self.file_size * 1024 * 1024
             chunk_size = 100 * 1024 * 1024
             total_chunks = file_size_bytes // chunk_size
+            last_chunk_size = file_size_bytes % chunk_size
+
             Path(self.file_path).touch()
 
-            for i in range(total_chunks):
-                self.generate_chunk(self.file_path, chunk_size)
-                progress = (i + 1) / total_chunks * 100
-                self.progress_callback.emit(progress)
+            self.generate_file(total_chunks, chunk_size)
 
-            self.progress_callback.emit(100)
+            if last_chunk_size > 0:
+                self.generate_chunk(self.file_path, last_chunk_size)
+                self.progress_callback.emit(100)
+
             self.generation_completed.emit("文件生成成功！")
         except Exception as e:
             self.generation_completed.emit(f"文件生成失败：{str(e)}")
-
-    def generate_chunk(self, file_path, chunk_size):
-        with open(file_path, 'ab') as file:
-            file.write(b'\0' * chunk_size)
-
 
 class FileGeneratorApp(QWidget):
     def __init__(self):
