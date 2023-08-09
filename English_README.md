@@ -1,3 +1,7 @@
+
+[English](https://github.com/fishzjp/FileTools/blob/main/English_README.md) | [简体中文](https://github.com/fishzjp/FileTools/blob/main/README.md)
+---
+
 # Background
 
 In the process of software development and system testing, it is often necessary to test the performance and handling capabilities of a system when the disk space is full. Such testing scenarios help developers and testers evaluate the robustness and performance of the system in resource-constrained environments. However, manually creating large files and filling up the disk is a tedious and time-consuming task. To simplify this process and improve efficiency, I have developed a file generation tool that can create files of arbitrary sizes according to requirements, simulating a scenario where the disk space is full.
