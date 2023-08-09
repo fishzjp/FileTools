@@ -1,3 +1,8 @@
+---
+[English](https://github.com/fishzjp/FileTools/English_README.md) | [简体中文](https://github.com/fishzjp/FileTools/README.md)
+---
+
+
 # 背景
 
 在软件开发和系统测试的过程中，经常需要测试在磁盘空间满的情况下系统的表现和处理能力。这样的测试场景可以帮助开发人员和测试人员评估系统在资源紧张的环境下的鲁棒性和性能。
