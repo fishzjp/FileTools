@@ -29,6 +29,6 @@ https://github.com/fishzjp/FileTools/releases
 The font used is Smiley Sans, available at https://github.com/atelier-anchor/smiley-sans
 
 # WeChat Public Account
-![QR Code](https://github.com/fishzjp/FileTools/assets/105406371/49abfbc1-d46e-410c-98f1-959f2dbfe87a)
+![QR Code](https://github.com/fishzjp/fishzjp/assets/105406371/d78c931a-b4c7-4d44-b624-82099c957bd1)
 
 <br> I hope this optimization is helpful for you. If there are any other areas that need improvement, please feel free to let me know.
