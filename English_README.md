@@ -10,13 +10,13 @@ In the process of software development and system testing, it is often necessary
 # Program Packaging
 
 ### The program is packaged using pyinstaller, with the option of using upx compression. The packaging commands are as follows:
-
-Packaging command with upx compression - Note: Replace --upx-dir= with the installation path of upx on your local machine
+```
+# Packaging command with upx compression - Note: Replace --upx-dir= with the installation path of upx on your local machine
 pyinstaller --onefile --add-data "icon.png;." --add-data "SmileySans-Oblique.ttf;." --add-data "style.qss;." --noconsole --upx-dir=D:\code\file_tools\tools\upx-4.0.2-win64\upx-4.0.2-win64 file_tools.py
 
-Packaging command without upx compression
+# Packaging command without upx compression
 pyinstaller --onefile --add-data "icon.png;." --add-data "SmileySans-Oblique.ttf;." --add-data "style.qss;." --noconsole file_tools.py
-
+```
 
 # Tool Interface
 
