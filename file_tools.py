@@ -8,19 +8,28 @@ from PyQt5.QtCore import Qt, QThread, pyqtSignal
 from PyQt5.QtWidgets import QToolTip
 import concurrent.futures
 
-
 def resource_path(relative_path):
+    """
+    获取资源路径，用于处理打包后的资源路径
+    :param relative_path: 相对路径
+    :return: 完整的资源路径
+    """
     if hasattr(sys, '_MEIPASS'):
         return os.path.join(sys._MEIPASS, relative_path)
     return os.path.join(os.path.dirname(os.path.abspath(__file__)), relative_path)
 
-
 class CustomApplication(QApplication):
+    """
+    自定义应用程序类，用于加载自定义字体
+    """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.load_custom_font()
 
     def load_custom_font(self):
+        """
+        加载自定义字体
+        """
         font_path = resource_path('SmileySans-Oblique.ttf')
         font_id = QFontDatabase.addApplicationFont(font_path)
         if font_id != -1:
@@ -28,42 +37,53 @@ class CustomApplication(QApplication):
             font = QFont(font_family)
             self.setFont(font)
 
-
 class DiskUsageProgressBar(QProgressBar):
+    """
+    自定义磁盘使用进度条类
+    """
     def __init__(self, parent=None):
         super().__init__(parent)
         self.load_style()
         self.setTextVisible(False)
 
     def load_style(self):
+        """
+        加载样式表
+        """
         style_file = resource_path('style.qss')
         with open(style_file, 'r', encoding='utf-8') as f:
             self.setStyleSheet(f.read())
 
     def paintEvent(self, event):
+        """
+        重写绘制事件，自定义绘制进度条
+        """
         progress = 100 * self.value() / self.maximum()
         text = f'{progress:.1f}%'
         painter = QPainter(self)
         painter.setRenderHint(QPainter.Antialiasing)
-        height = self.height() - 6
-        width = self.width() * (progress / 100)
+        height = int(self.height() - 3)
+        width = int(self.width() * (progress / 100))
         painter.setPen(Qt.NoPen)
         painter.setBrush(Qt.lightGray)
         painter.drawRoundedRect(2, 2, self.width() - 4, height, 8, 8)
         if width > 0:
             painter.setBrush(Qt.blue)
             painter.drawRoundedRect(2, 2, width, height, 8, 8)
-        font = QFont()
-        font.setPointSize(13)
-        painter.setFont(font)
+
         painter.setPen(Qt.white)
         painter.drawText(self.rect(), Qt.AlignCenter, text)
 
     def setValue(self, progress):
-        super().setValue(progress)
-
+        """
+        设置进度值
+        """
+        super().setValue(int(progress))
 
 class DiskUsageWidget(QWidget):
+    """
+    磁盘使用情况小部件类
+    """
     def __init__(self, device, total, used, percent, unit):
         super().__init__()
         self.device = device
@@ -74,6 +94,9 @@ class DiskUsageWidget(QWidget):
         self.init_ui()
 
     def init_ui(self):
+        """
+        初始化用户界面
+        """
         layout = QVBoxLayout()
         title_label = QLabel(f"{self.device} 盘空间使用情况")
         title_label.setAlignment(Qt.AlignCenter)
@@ -89,9 +112,15 @@ class DiskUsageWidget(QWidget):
         self.setLayout(layout)
 
     def set_unit(self, unit):
+        """
+        设置单位
+        """
         self.current_unit = unit
 
     def update_current_space(self):
+        """
+        更新当前空间信息
+        """
         unit_mapping = {"KB": 1024, "MB": 1024 * 1024, "GB": 1024 * 1024 * 1024, "TB": 1024 * 1024 * 1024 * 1024}
         selected_unit = self.current_unit
 
@@ -100,16 +129,12 @@ class DiskUsageWidget(QWidget):
         total_space = self.total / unit_mapping[selected_unit]
 
         text = f"{current_space:.2f} {selected_unit[0]}B / {available_space:.2f} {selected_unit[0]}B / {total_space:.2f} {selected_unit[0]}B"
-        self.current_space_label.setStyleSheet("font-size: 14px; color: #999999;")
+        self.current_space_label.setStyleSheet("font-size: 12px; color: #999999;")
         self.current_space_label.setAlignment(Qt.AlignCenter)
         self.current_space_label.setText(text)
         self.current_space_label.setToolTip(f"已用空间：{current_space:.2f} {selected_unit}\n"
                                              f"剩余空间：{available_space:.2f} {selected_unit}\n"
                                              f"总空间：{total_space:.2f} {selected_unit}")
-
-        font = QFont()
-        font.setPointSize(12)
-        self.current_space_label.setFont(font)
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
@@ -123,8 +148,10 @@ class DiskUsageWidget(QWidget):
         # Override the leaveEvent to reset the tooltip when the mouse leaves
         QToolTip.hideText()
 
-
 def get_disk_usages():
+    """
+    获取磁盘使用情况
+    """
     disk_usages = []
     partitions = psutil.disk_partitions(all=True)
     for partition in partitions:
@@ -134,8 +161,10 @@ def get_disk_usages():
         disk_usages.append((partition.device, usage.total, usage.used, usage.percent))
     return disk_usages
 
-
 class DiskUsageThread(QThread):
+    """
+    磁盘使用情况线程类
+    """
     disk_usages_signal = pyqtSignal(list)
 
     def run(self):
@@ -144,13 +173,17 @@ class DiskUsageThread(QThread):
             self.disk_usages_signal.emit(disk_usages)
             self.msleep(1000)
 
-
 def generate_chunk(file_path, chunk_size):
+    """
+    生成文件块
+    """
     with open(file_path, 'wb') as file:
         file.write(b'\0' * chunk_size)
 
-
 def generate_file(file_path, file_size, progress_callback):
+    """
+    生成文件
+    """
     file_size_bytes = file_size * 1024 * 1024
     chunk_size = 100 * 1024 * 1024
     total_chunks = file_size_bytes // chunk_size
@@ -163,8 +196,10 @@ def generate_file(file_path, file_size, progress_callback):
 
     progress_callback.emit(100)
 
-
 class FileGeneratorThread(QThread):
+    """
+    文件生成线程类
+    """
     generation_completed = pyqtSignal(str)
     progress_callback = pyqtSignal(int)
 
@@ -208,6 +243,9 @@ class FileGeneratorThread(QThread):
             self.generation_completed.emit(f"文件生成失败：{str(e)}")
 
 class FileGeneratorApp(QWidget):
+    """
+    文件生成应用程序主窗口类
+    """
     def __init__(self):
         super().__init__()
         self.setWindowTitle('任意大小文件生成器')
@@ -236,6 +274,9 @@ class FileGeneratorApp(QWidget):
             QApplication.setFont(QFont(font_family))  # 这里也要设置应用程序的字体
 
     def load_style(self):
+        """
+        加载样式表
+        """
         style_file = resource_path('style.qss')
         with open(style_file, 'r', encoding='utf-8') as f:
             style = f.read()
@@ -254,6 +295,9 @@ class FileGeneratorApp(QWidget):
             widget.setStyleSheet(style)
 
     def init_ui(self):
+        """
+        初始化用户界面
+        """
         layout = QVBoxLayout()
         layout.setSpacing(10)
 
@@ -268,7 +312,7 @@ class FileGeneratorApp(QWidget):
         self.name_input = QLineEdit()
         self.name_input.setPlaceholderText('输入文件名称')
 
-        size_label = QLabel('文件大小(MB):')
+        size_label = QLabel('文件大小:')
         self.size_input = QLineEdit()
         self.size_input.setPlaceholderText('输入文件大小')
 
@@ -321,11 +365,17 @@ class FileGeneratorApp(QWidget):
         self.setLayout(layout)
 
     def create_radio_button(self, text):
+        """
+        创建单选按钮
+        """
         radio_button = QRadioButton(text)
         radio_button.setChecked(text == "GB")
         return radio_button
 
     def on_unit_changed(self):
+        """
+        单位改变事件处理函数
+        """
         selected_unit = ""
         for radio_button in self.unit_radio_buttons:
             if radio_button.isChecked():
@@ -339,10 +389,16 @@ class FileGeneratorApp(QWidget):
             widget.update_current_space()
 
     def browse_button_clicked(self):
+        """
+        浏览按钮点击事件处理函数
+        """
         dir_path = QFileDialog.getExistingDirectory(self, '选择文件夹路径')
         self.path_input.setText(dir_path)
 
     def generate_button_clicked(self):
+        """
+        生成文件按钮点击事件处理函数
+        """
         dir_path = self.path_input.text()
         file_name = self.name_input.text()
         file_size = self.size_input.text()
@@ -370,12 +426,21 @@ class FileGeneratorApp(QWidget):
             QMessageBox.warning(self, '警告', '文件大小必须是一个整数！', QMessageBox.Ok)
 
     def file_generation_completed(self, message):
+        """
+        文件生成完成处理函数
+        """
         QMessageBox.information(self, '生成结果', message, QMessageBox.Ok)
 
     def update_progress_bar(self, progress):
+        """
+        更新进度条
+        """
         self.progress_bar.setValue(progress)
 
     def update_disk_usages(self, disk_usages):
+        """
+        更新磁盘使用情况
+        """
         for widget in self.disk_usage_widgets:
             widget.setParent(None)
         self.disk_usage_widgets = []

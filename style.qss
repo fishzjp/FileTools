@@ -3,6 +3,7 @@
 /* 整体风格设置 */
 QWidget {
     background-color: #F5F5F5;
+    font-size: 12px;
 }
 
 * {
@@ -10,17 +11,11 @@ QWidget {
     /* 其他样式设置 */
 }
 
-/* 标签样式 */
-QLabel {
-    font-size: 16px;
-}
-
 /* 文本输入框样式 */
 QLineEdit {
     border: 1px solid #DADADA;
     border-radius: 5px;
     padding: 5px;
-    font-size: 14px;
 }
 
 /* 进度条样式 */
@@ -45,7 +40,6 @@ QPushButton {
     color: #FFFFFF;
     background-color: #007BFF;
     border-radius: 5px;
-    font-size: 16px;
 }
 
 QPushButton:hover {
@@ -56,10 +50,6 @@ QPushButton:pressed {
     background-color: #004080;
 }
 
-/* 文件生成器App界面样式 */
-FileGeneratorApp {
-    font-size: 16px;
-}
 QProgressBar {
     border: 0px;
     border-radius: 10px;
