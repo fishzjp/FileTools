@@ -68,7 +68,7 @@ class DiskUsageProgressBar(QProgressBar):
         painter.setBrush(Qt.lightGray)
         painter.drawRoundedRect(2, 2, self.width() - 4, height, 8, 8)
         if width > 0:
-            painter.setBrush(Qt.blue)
+            painter.setBrush(QColor("#007BFF"))
             painter.drawRoundedRect(2, 2, width, height, 8, 8)
 
         painter.setPen(Qt.white)
