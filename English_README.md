@@ -1,38 +1,140 @@
 
-[English](https://github.com/fishzjp/FileTools/blob/main/English_README.md) | [简体中文](https://github.com/fishzjp/FileTools/blob/main/README.md)
+[English](English_README.md) | [简体中文](README.md)
 ---
 
-# Background
+# 📁 File Size Generator Tool
 
-In the process of software development and system testing, it is often necessary to test the performance and handling capabilities of a system when the disk space is full. Such testing scenarios help developers and testers evaluate the robustness and performance of the system in resource-constrained environments. However, manually creating large files and filling up the disk is a tedious and time-consuming task. To simplify this process and improve efficiency, I have developed a file generation tool that can create files of arbitrary sizes according to requirements, simulating a scenario where the disk space is full.
+A file generation tool built with **Gradio** for quickly generating files of specified sizes and monitoring disk space usage in real-time. Suitable for software development, system testing, and scenarios that need to simulate full disk conditions.
 
-# Project Features
+## ✨ Features
 
-1. User-friendly interface: This tool utilizes the PyQt5 library to create a graphical interface, allowing users to operate intuitively and conveniently. The interface provides input fields for folder path, file name, file size, as well as browse and generate buttons, enabling users to easily choose paths and set file parameters.
-2. Fast file writing speed: Instantaneous writing of files of any size.
+1. **Modern Web Interface**: Built with Gradio for an intuitive and user-friendly Web UI, supporting cross-platform access
+2. **Fast File Generation**: Efficient chunk-based writing algorithm for quick generation of files of any size (KB/MB/GB/TB)
+3. **Real-time Disk Monitoring**: Real-time display of disk usage with support for multiple unit switching
+4. **Smart Error Handling**: Comprehensive input validation and error messages, including disk space checking
+5. **Cross-platform Support**: Supports Windows, macOS, and Linux systems
 
-# Program Packaging
+## 🚀 Quick Start
 
-### The program is packaged using pyinstaller, with the option of using upx compression. The packaging commands are as follows:
+### Requirements
+
+- Python >= 3.11
+- Dependencies: `psutil`, `gradio`
+
+### Installation
+
+Using `uv` package manager (recommended):
+
+```bash
+# Install dependencies
+uv sync
+
+# Run the application
+uv run python main.py
 ```
-# Packaging command with upx compression - Note: Replace --upx-dir= with the installation path of upx on your local machine
-pyinstaller --onefile --add-data "icon.png;." --add-data "SmileySans-Oblique.ttf;." --add-data "style.qss;." --noconsole --upx-dir=D:\code\file_tools\tools\upx-4.0.2-win64\upx-4.0.2-win64 file_tools.py
 
-# Packaging command without upx compression
-pyinstaller --onefile --add-data "icon.png;." --add-data "SmileySans-Oblique.ttf;." --add-data "style.qss;." --noconsole file_tools.py
+Or using traditional method:
+
+```bash
+# Install dependencies
+pip install -r requirements.txt
+
+# Run the application
+python main.py
 ```
 
-# Tool Interface
+### Usage
 
-![image](https://github.com/fishzjp/FileTools/assets/105406371/5cb835f9-def3-4a29-bcb4-b5db637a9146)
+1. After starting the application, the browser will automatically open (default address: `http://localhost:7860`)
+2. In the "File Generation Settings" area:
+   - Enter the save path (e.g., `/Users/username/Downloads`)
+   - Enter the file name (e.g., `test_file.bin`)
+   - Enter the file size and select the unit (KB/MB/GB/TB)
+3. Click the "Generate File" button
+4. View disk usage in real-time in the "Disk Space Monitoring" area
+5. Switch display units or manually refresh disk information
 
-# Tool Download ![](https://img.shields.io/github/v/release/fishzjp/FileTools?style=flat-square) 
-https://github.com/fishzjp/FileTools/releases
+## 📁 Project Structure
 
-# Tool Font
-The font used is Smiley Sans, available at https://github.com/atelier-anchor/smiley-sans
+```
+FileTools/
+├── main.py                 # Main entry file
+├── config/                 # Configuration module
+│   ├── constants.py       # Constants definition
+│   └── __init__.py
+├── models/                 # Business logic module
+│   ├── file_generator.py  # File generation logic
+│   ├── disk_monitor.py    # Disk monitoring logic
+│   └── __init__.py
+├── ui/                     # UI module
+│   ├── interface.py       # Gradio interface components
+│   └── __init__.py
+└── utils/                  # Utility functions module
+    ├── disk.py            # Disk utility functions
+    └── __init__.py
+```
 
-# WeChat Public Account
-![QR Code](https://github.com/fishzjp/fishzjp/assets/105406371/d78c931a-b4c7-4d44-b624-82099c957bd1)
+## 🔧 Technical Architecture
 
-<br> I hope this optimization is helpful for you. If there are any other areas that need improvement, please feel free to let me know.
+- **Frontend Framework**: Gradio (Python Web UI framework)
+- **System Monitoring**: psutil (cross-platform system monitoring library)
+- **File Operations**: Python standard library `pathlib`, `io`
+- **Architecture Pattern**: Modular design with clear separation of concerns
+
+## 💡 Core Features
+
+### File Generation
+
+- Supports KB, MB, GB, TB units
+- Uses chunk-based writing algorithm (100MB chunks) for fast generation
+- Automatic file size and disk space validation
+- Comprehensive error handling and messages
+
+### Disk Monitoring
+
+- Real-time display of all disk partition usage
+- Intelligent filtering of system partitions (macOS/Windows)
+- Support for multiple display unit switching
+- Shows usage rate, used space, available space, and total space
+
+## 📝 Development Notes
+
+### Code Optimization Highlights
+
+1. **Modular Architecture**: Clear separation of UI, business logic, and utility functions
+2. **Error Handling**: Comprehensive exception handling with user-friendly error messages
+3. **Type Annotations**: Complete type hints for improved code maintainability
+4. **Documentation**: Detailed function documentation for easy understanding and maintenance
+
+### Runtime Configuration
+
+Default configuration:
+- Server address: `0.0.0.0`
+- Port: `7860`
+- Share link: Disabled
+
+You can modify startup parameters in `main.py`.
+
+## 📦 Packaging (Optional)
+
+If you need to package as a standalone application, you can use PyInstaller:
+
+```bash
+# Package with upx compression (requires upx installation)
+pyinstaller --onefile --noconsole --upx-dir=path/to/upx main.py
+
+# Package without upx compression
+pyinstaller --onefile --noconsole main.py
+```
+
+## 🤝 Contributing
+
+Issues and Pull Requests are welcome!
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+---
+
+Hope this tool helps you! If you have any questions or suggestions, please feel free to provide feedback.

@@ -1,40 +1,132 @@
 
-[English](https://github.com/fishzjp/FileTools/blob/main/English_README.md) | [简体中文](https://github.com/fishzjp/FileTools/blob/main/README.md)
+[English](English_README.md) | [简体中文](README.md)
 ---
 
+# 📁 文件大小生成工具
 
-# 背景
+一个基于 **Gradio** 的文件生成工具，用于快速生成指定大小的文件，并实时监控磁盘空间使用情况。适用于软件开发、系统测试等需要模拟磁盘空间满的场景。
 
-在软件开发和系统测试的过程中，经常需要测试在磁盘空间满的情况下系统的表现和处理能力。这样的测试场景可以帮助开发人员和测试人员评估系统在资源紧张的环境下的鲁棒性和性能。
-然而，手动创建大文件并将磁盘填满是一项繁琐且耗时的任务。为了简化这个过程并提高效率，我开发了一个文件生成工具，该工具可以根据需求创建任意大小的文件，以模拟磁盘空间满的场景。
+## ✨ 项目特点
 
-# 项目特点
+1. **现代化 Web 界面**：使用 Gradio 构建直观易用的 Web UI，支持跨平台访问
+2. **快速文件生成**：高效的块写入算法，快速生成任意大小的文件（KB/MB/GB/TB）
+3. **实时磁盘监控**：实时显示磁盘使用情况，支持多种单位切换
+4. **智能错误处理**：完善的输入验证和错误提示，包括磁盘空间检查
+5. **跨平台支持**：支持 Windows、macOS、Linux 系统
 
-1. 用户友好的界面：该工具使用了PyQt5库来创建一个图形化界面，使用户能够直观、方便地操作。界面提供了文件夹路径、文件名称和文件大小等输入框，以及浏览和生成按钮，用户可以轻松选择路径和设置文件参数。
-2. 文件写入速度快：任意大小文件秒写入
+## 🚀 快速开始
 
-# 程序打包
+### 环境要求
 
-### 程序使用pyinstaller打包，打包时有使用upx压缩，打包命令如下
+- Python >= 3.11
+- 依赖包：`psutil`, `gradio`
+
+### 安装
+
+使用 `uv` 包管理器（推荐）：
+
+```bash
+# 安装依赖
+uv sync
+
+# 运行应用
+uv run python main.py
 ```
-# 使用upx压缩打包命令  注意：--upx-dir= 需要替换为你本地upx的安装路径
-pyinstaller --onefile --add-data "icon.png;." --add-data "SmileySans-Oblique.ttf;." --add-data "style.qss;." --noconsole --upx-dir=D:\code\file_tools\tools\upx-4.0.2-win64\upx-4.0.2-win64 file_tools.py
 
-# 不使用upx压缩打包命令
-pyinstaller --onefile --add-data "icon.png;." --add-data "SmileySans-Oblique.ttf;." --add-data "style.qss;." --noconsole file_tools.py
+或使用传统方式：
+
+```bash
+# 安装依赖
+pip install -r requirements.txt
+
+# 运行应用
+python main.py
 ```
 
-# 工具界面
+### 使用说明
 
-![image](https://github.com/fishzjp/FileTools/assets/105406371/5cb835f9-def3-4a29-bcb4-b5db637a9146)
+1. 启动应用后，浏览器会自动打开（默认地址：`http://localhost:7860`）
+2. 在"文件生成设置"区域：
+   - 输入保存路径（例如：`/Users/username/Downloads`）
+   - 输入文件名称（例如：`test_file.bin`）
+   - 输入文件大小并选择单位（KB/MB/GB/TB）
+3. 点击"开始生成文件"按钮
+4. 在"磁盘空间监控"区域实时查看磁盘使用情况
+5. 可以切换显示单位或手动刷新磁盘信息
 
-# 工具下载 ![](https://img.shields.io/github/v/release/fishzjp/FileTools?style=flat-square) 
-https://github.com/fishzjp/FileTools/releases
+## 📁 项目结构
 
-# 工具字体
-字体采用得意黑 https://github.com/atelier-anchor/smiley-sans
+```
+FileTools/
+├── main.py                 # 主入口文件
+├── config/                 # 配置模块
+│   ├── constants.py       # 常量定义
+│   └── __init__.py
+├── models/                 # 业务逻辑模块
+│   ├── file_generator.py  # 文件生成逻辑
+│   ├── disk_monitor.py    # 磁盘监控逻辑
+│   └── __init__.py
+├── ui/                     # UI 模块
+│   ├── interface.py       # Gradio 界面组件
+│   └── __init__.py
+└── utils/                  # 工具函数模块
+    ├── disk.py            # 磁盘工具函数
+    └── __init__.py
+```
 
-# 公众号
-![扫码_搜索联合传播样式-白色版](https://github.com/fishzjp/FileTools/assets/105406371/49abfbc1-d46e-410c-98f1-959f2dbfe87a)
+## 🔧 技术架构
 
-<br> 希望这次优化对你有帮助，如果还有其他需要改进的地方，请随时告知。
+- **前端框架**：Gradio（Python Web UI 框架）
+- **系统监控**：psutil（跨平台系统监控库）
+- **文件操作**：Python 标准库 `pathlib`, `io`
+- **架构模式**：模块化设计，清晰的职责分离
+
+## 💡 核心特性
+
+### 文件生成
+
+- 支持 KB、MB、GB、TB 四种单位
+- 使用块写入算法（100MB 块），提高生成速度
+- 自动验证文件大小和磁盘空间
+- 完善的错误处理和提示
+
+### 磁盘监控
+
+- 实时显示所有磁盘分区的使用情况
+- 智能过滤系统分区（macOS/Windows）
+- 支持多种显示单位切换
+- 显示使用率、已用空间、可用空间、总空间
+
+## 📝 开发说明
+
+### 代码优化亮点
+
+1. **模块化架构**：UI、业务逻辑、工具函数清晰分离
+2. **错误处理**：完善的异常捕获和用户友好的错误提示
+3. **类型注解**：完整的类型提示，提升代码可维护性
+4. **文档字符串**：详细的函数文档，便于理解和维护
+
+### 运行配置
+
+默认配置：
+- 服务器地址：`0.0.0.0`
+- 端口：`7860`
+- 共享链接：关闭
+
+可在 `main.py` 中修改启动参数。
+
+## 🤝 贡献
+
+欢迎提交 Issue 和 Pull Request！
+
+## 📄 许可证
+
+本项目采用 MIT 许可证。
+
+## 📱 公众号
+
+![扫码_搜索联合传播样式-白色版](https://github.com/fishzjp/FileTools/assets/105406371/49abfbc1-d46e-410c-98f1-5db637a9146)
+
+---
+
+希望这个工具对你有帮助！如有任何问题或建议，欢迎反馈。
