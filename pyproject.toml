@@ -1,10 +1,50 @@
 [project]
-name = "filetools-main"
-version = "0.1.0"
+name = "filetools"
+version = "0.2.0"
 description = "A file size generation tool with disk monitoring, built with Gradio"
 readme = "README.md"
 requires-python = ">=3.11"
+license = {text = "MIT"}
+authors = [
+    {name = "FileTools Contributors"}
+]
+keywords = [
+    "file-generation",
+    "disk-monitoring",
+    "gradio",
+    "file-tools",
+    "disk-space",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: System :: Monitoring",
+    "Topic :: Utilities",
+]
 dependencies = [
     "psutil>=7.1.3",
     "gradio>=4.0.0",
 ]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/fishzjp/FileTools"
+Repository = "https://github.com/fishzjp/FileTools"
+Issues = "https://github.com/fishzjp/FileTools/issues"
+Documentation = "https://github.com/fishzjp/FileTools#readme"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatchling.build]
+packages = ["src/filetools"]

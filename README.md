@@ -1,5 +1,8 @@
+[English](docs/English_README.md) | [简体中文](README.md)
 
-[English](English_README.md) | [简体中文](README.md)
+[![GitHub stars](https://img.shields.io/github/stars/fishzjp/FileTools)](https://github.com/fishzjp/FileTools)
+[![GitHub forks](https://img.shields.io/github/forks/fishzjp/FileTools)](https://github.com/fishzjp/FileTools)
+
 ---
 
 # 📁 文件大小生成工具
@@ -13,6 +16,8 @@
 3. **实时磁盘监控**：实时显示磁盘使用情况，支持多种单位切换
 4. **智能错误处理**：完善的输入验证和错误提示，包括磁盘空间检查
 5. **跨平台支持**：支持 Windows、macOS、Linux 系统
+6. **完善的测试覆盖**：使用 pytest 进行单元测试，确保代码质量
+7. **日志记录**：完整的日志系统，便于问题排查
 
 ## 🚀 快速开始
 
@@ -36,12 +41,17 @@ uv run python main.py
 或使用传统方式：
 
 ```bash
-# 安装依赖
-pip install -r requirements.txt
+# 安装依赖（从 pyproject.toml）
+pip install -e .
+
+# 或直接安装依赖包
+pip install psutil>=7.1.3 gradio>=4.0.0
 
 # 运行应用
 python main.py
 ```
+
+详细安装说明请查看 [安装指南](docs/installation.md)。
 
 ### 使用说明
 
@@ -52,33 +62,72 @@ python main.py
    - 输入文件大小并选择单位（KB/MB/GB/TB）
 3. 点击"开始生成文件"按钮
 4. 在"磁盘空间监控"区域实时查看磁盘使用情况
-5. 可以切换显示单位或手动刷新磁盘信息
+
+详细使用说明请查看 [使用指南](docs/usage.md)。
 
 ## 📁 项目结构
 
 ```
 FileTools/
 ├── main.py                 # 主入口文件
-├── config/                 # 配置模块
-│   ├── constants.py       # 常量定义
-│   └── __init__.py
-├── models/                 # 业务逻辑模块
-│   ├── file_generator.py  # 文件生成逻辑
-│   ├── disk_monitor.py    # 磁盘监控逻辑
-│   └── __init__.py
-├── ui/                     # UI 模块
-│   ├── interface.py       # Gradio 界面组件
-│   └── __init__.py
-└── utils/                  # 工具函数模块
-    ├── disk.py            # 磁盘工具函数
-    └── __init__.py
+├── pyproject.toml          # 项目配置和依赖管理
+├── LICENSE                 # MIT 许可证
+├── docs/                   # 文档目录
+│   ├── CHANGELOG.md        # 版本变更记录
+│   ├── English_README.md   # 英文 README
+│   ├── contributing.md     # 贡献指南
+│   ├── development.md      # 开发指南
+│   ├── installation.md     # 安装指南
+│   ├── usage.md            # 使用指南
+│   ├── testing.md          # 测试文档
+│   ├── logging.md          # 日志文档
+│   └── faq.md              # 常见问题
+├── src/                    # 源代码目录
+│   └── filetools/          # 主包
+│       ├── __init__.py
+│       ├── config/         # 配置模块
+│       │   ├── __init__.py
+│       │   ├── constants.py # 常量定义
+│       │   └── logger.py   # 日志配置
+│       ├── models/          # 业务逻辑模块
+│       │   ├── __init__.py
+│       │   ├── file_generator.py  # 文件生成逻辑
+│       │   ├── disk_monitor.py    # 磁盘监控逻辑
+│       │   └── disk_usage.py      # 磁盘使用情况数据模型
+│       └── ui/              # UI 模块
+│           ├── __init__.py
+│           └── interface.py # Gradio 界面组件
+├── tests/                  # 测试模块
+│   ├── __init__.py
+│   ├── test_constants.py
+│   ├── test_disk_monitor.py
+│   ├── test_file_generator.py
+│   ├── test_file_generator_core.py
+│   ├── test_ui_functions.py
+│   └── test_ui_validation.py
+├── docs/                   # 文档目录
+│   ├── installation.md    # 安装指南
+│   ├── usage.md           # 使用指南
+│   ├── development.md     # 开发指南
+│   ├── testing.md         # 测试文档
+│   ├── logging.md         # 日志文档
+│   ├── faq.md             # 常见问题
+│   └── contributing.md    # 贡献指南
+├── assets/                 # 资源文件目录
+│   └── 扫码_搜索联合传播样式-白色版.png
+└── .github/                # GitHub 配置
+    └── workflows/
+        └── ci.yml          # CI 工作流
 ```
+
+完整项目结构说明请查看 [开发指南](docs/development.md)。
 
 ## 🔧 技术架构
 
 - **前端框架**：Gradio（Python Web UI 框架）
 - **系统监控**：psutil（跨平台系统监控库）
 - **文件操作**：Python 标准库 `pathlib`, `io`
+- **测试框架**：pytest
 - **架构模式**：模块化设计，清晰的职责分离
 
 ## 💡 核心特性
@@ -89,35 +138,51 @@ FileTools/
 - 使用块写入算法（100MB 块），提高生成速度
 - 自动验证文件大小和磁盘空间
 - 完善的错误处理和提示
+- 支持进度回调，实时显示生成进度
 
 ### 磁盘监控
 
 - 实时显示所有磁盘分区的使用情况
 - 智能过滤系统分区（macOS/Windows）
-- 支持多种显示单位切换
+- 支持多种显示单位切换（KB/MB/GB/TB）
 - 显示使用率、已用空间、可用空间、总空间
+- 自动刷新和手动刷新两种模式
 
-## 📝 开发说明
+## 📚 文档
 
-### 代码优化亮点
+- [安装指南](docs/installation.md) - 详细的安装说明和环境配置
+- [使用指南](docs/usage.md) - 功能使用说明和示例
+- [开发指南](docs/development.md) - 开发环境设置和代码规范
+- [测试文档](docs/testing.md) - 测试运行和编写指南
+- [日志文档](docs/logging.md) - 日志配置和查看方法
+- [常见问题](docs/faq.md) - FAQ 和故障排除
+- [贡献指南](docs/contributing.md) - 如何为项目做贡献
 
-1. **模块化架构**：UI、业务逻辑、工具函数清晰分离
-2. **错误处理**：完善的异常捕获和用户友好的错误提示
-3. **类型注解**：完整的类型提示，提升代码可维护性
-4. **文档字符串**：详细的函数文档，便于理解和维护
+## 🧪 测试
 
-### 运行配置
+项目使用 `pytest` 进行单元测试。运行测试：
 
-默认配置：
-- 服务器地址：`0.0.0.0`
-- 端口：`7860`
-- 共享链接：关闭
+```bash
+# 使用 uv 运行测试（推荐）
+uv run pytest
 
-可在 `main.py` 中修改启动参数。
+# 运行测试并显示覆盖率
+uv run pytest --cov=models --cov=ui --cov=config
+```
+
+详细测试说明请查看 [测试文档](docs/testing.md)。
+
+## ❓ 常见问题
+
+遇到问题？请先查看 [常见问题文档](docs/faq.md)。
 
 ## 🤝 贡献
 
-欢迎提交 Issue 和 Pull Request！
+欢迎提交 Issue 和 Pull Request！详细说明请查看 [贡献指南](docs/contributing.md)。
+
+- 📝 [提交 Issue](https://github.com/fishzjp/FileTools/issues)
+- 🔀 [提交 Pull Request](https://github.com/fishzjp/FileTools/pulls)
+- 📦 [项目仓库](https://github.com/fishzjp/FileTools)
 
 ## 📄 许可证
 
@@ -125,7 +190,7 @@ FileTools/
 
 ## 📱 公众号
 
-![扫码_搜索联合传播样式-白色版](https://private-user-images.githubusercontent.com/105406371/250923522-49abfbc1-d46e-410c-98f1-959f2dbfe87a.png?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NjIxNDIwMzAsIm5iZiI6MTc2MjE0MTczMCwicGF0aCI6Ii8xMDU0MDYzNzEvMjUwOTIzNTIyLTQ5YWJmYmMxLWQ0NmUtNDEwYy05OGYxLTk1OWYyZGJmZTg3YS5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjUxMTAzJTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI1MTEwM1QwMzQ4NTBaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT0xMjhhZjlkYWQyYzY5YjE5Njc5NjVlODk2NDM4MzFhYThkYzc4ZjBmOTE5OTdiZWRiMDhkMzA1ZDE3NmRlMDg3JlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCJ9.4aGe9XJGXn8oQbgy9MH5FQVPUA1ywFncA3zvV1Xjjgw)
+![扫码_搜索联合传播样式-白色版](assets/扫码_搜索联合传播样式-白色版.png)
 
 ---
 
