@@ -2,6 +2,8 @@
 import pytest
 import tempfile
 import os
+import time
+import sys
 from pathlib import Path
 from filetools.ui.interface import _validate_inputs, _validate_directory, _validate_file_size
 
@@ -57,7 +59,21 @@ class TestUIValidation:
                 assert is_valid is False
                 assert "不存在" in error_msg or "目录" in error_msg
             finally:
-                os.unlink(tmpfile_path)
+                # Windows 上文件可能被锁定，需要重试删除
+                max_retries = 3
+                for attempt in range(max_retries):
+                    try:
+                        Path(tmpfile_path).unlink()
+                        break
+                    except (PermissionError, OSError) as e:
+                        if attempt < max_retries - 1:
+                            time.sleep(0.1)  # 等待文件句柄释放
+                        else:
+                            # Windows 上如果文件仍被锁定，忽略错误
+                            if sys.platform == "win32":
+                                pass  # Windows 上允许删除失败
+                            else:
+                                raise  # 其他平台抛出异常
     
     def test_validate_file_size_valid(self):
         """测试有效的文件大小"""
