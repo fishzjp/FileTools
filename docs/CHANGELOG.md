@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.3] - 2025-12-20
+
+### Updated
+- 更新版本号至 1.0.3
+
 ## [0.2.0] - 2025-12-20
 
 ### Changed
@@ -44,7 +49,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 智能错误处理：包括磁盘空间检查和友好的错误提示
 - 跨平台支持：支持 Windows、macOS、Linux 系统
 
-[Unreleased]: https://github.com/fishzjp/FileTools/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/fishzjp/FileTools/compare/v1.0.3...HEAD
+[1.0.3]: https://github.com/fishzjp/FileTools/compare/v0.2.0...v1.0.3
 [0.2.0]: https://github.com/fishzjp/FileTools/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/fishzjp/FileTools/releases/tag/v0.1.0
 

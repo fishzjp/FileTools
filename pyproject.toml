@@ -1,6 +1,6 @@
 [project]
 name = "filetools"
-version = "0.2.0"
+version = "1.0.3"
 description = "A file size generation tool with disk monitoring, built with Gradio"
 readme = "README.md"
 requires-python = ">=3.11"
